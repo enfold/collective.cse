@@ -1,0 +1,49 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="collective.cse">
+
+  <!-- Set overrides folder for Just-a-Bunch-Of-Templates product -->
+  <include package="z3c.jbot" file="meta.zcml" />
+  <browser:jbot
+      directory="overrides"
+      layer="collective.cse.interfaces.ICollectiveCseLayer"
+      />
+
+  <!-- Publish static files -->
+  <plone:static
+      name="collective.cse"
+      type="plone"
+      directory="static"
+      />
+
+  <!-- Control panel -->
+  <browser:page
+      name="cse-settings"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class=".controlpanel.CollectiveCSESettingsControlPanel"
+      permission="cmf.ManagePortal"
+      layer="collective.cse.interfaces.ICollectiveCseLayer"
+      />
+
+  <!-- Search page -->
+  <browser:page
+      for="*"
+      name="csesearch"
+      class=".search.CSEView"
+      template="search.pt"
+      permission="zope2.View"
+      layer="collective.cse.interfaces.ICollectiveCseLayer"
+      />
+
+  <!-- Override Search viewlet -->
+  <browser:viewlet
+      name="plone.searchbox"
+      manager="plone.app.layout.viewlets.interfaces.IPortalHeader"
+      class=".viewlet.CSESearchbox"
+      permission="zope2.View"
+      layer="collective.cse.interfaces.ICollectiveCseLayer"
+      />
+
+</configure>

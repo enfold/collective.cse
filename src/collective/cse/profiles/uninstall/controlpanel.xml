@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<object name="portal_controlpanel">
+  <configlet
+      title="Google Custom Search Engine Settings"
+      action_id="collective.cse"
+      appId="collective.cse"
+      category="Products"
+      remove="true" />
+</object>

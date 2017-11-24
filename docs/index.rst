@@ -1,0 +1,5 @@
+====================
+collective.cse
+====================
+
+User documentation

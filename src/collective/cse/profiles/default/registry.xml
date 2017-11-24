@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<registry>
+  <records
+      interface="collective.cse.interfaces.ICollectiveCSESettings" />
+
+  <record name="collective.cse.interfaces.ICollectiveCSESettings.sort_options" interface="collective.cse.interfaces.ICollectiveCSESettings" field="sort_options">
+    <field type="plone.registry.field.Text">
+      <default></default>
+      <description xmlns:ns0="http://xml.zope.org/namespaces/i18n" ns0:domain="collective.cse" ns0:translate="">List here all available sorting options. Format: id|Title</description>
+      <required>False</required>
+      <title xmlns:ns0="http://xml.zope.org/namespaces/i18n" ns0:domain="collective.cse" ns0:translate="">Available sort options</title>
+    </field>
+    <value>|Relevance&#13;
+date|Date</value>
+  </record>
+
+</registry>
