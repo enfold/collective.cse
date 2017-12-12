@@ -1,0 +1,54 @@
+# --- PLEASE EDIT THE LINES BELOW CORRECTLY ---
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2017-11-24 01:57+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: collective.cse\n"
+
+#: ../browser/controlpanel.py:12
+msgid "Configure the Google Custom Search Plone integration."
+msgstr ""
+
+#: ../interfaces.py:16
+msgid "Enter here the search ID, as found in https://cse.google.com/cse/all"
+msgstr ""
+
+#: ../profiles/default/controlpanel.xml
+msgid "Google Custom Search Engine Settings"
+msgstr ""
+
+#: ../browser/controlpanel.py:11
+msgid "Google Custom Search settings"
+msgstr ""
+
+#: ../configure.zcml:34
+msgid "Installs the collective.cse add-on."
+msgstr ""
+
+#: ../interfaces.py:15
+msgid "Search engine ID"
+msgstr ""
+
+#: ../configure.zcml:43
+msgid "Uninstalls the collective.cse add-on."
+msgstr ""
+
+#: ../configure.zcml:34
+msgid "collective.cse"
+msgstr ""
+
+#: ../configure.zcml:43
+msgid "collective.cse (uninstall)"
+msgstr ""

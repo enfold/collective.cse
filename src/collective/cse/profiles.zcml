@@ -1,0 +1,41 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+  xmlns:zcml="http://namespaces.zope.org/zcml"
+  i18n_domain="plone">
+
+  <genericsetup:registerProfile
+      name="default"
+      title="Google Custom Search Engine integration"
+      directory="profiles/default"
+      description="Installs the collective.cse add-on."
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      post_handler=".setuphandlers.post_install"
+      />
+
+  <genericsetup:registerProfile
+      name="uninstall"
+      title="collective.cse (uninstall)"
+      directory="profiles/uninstall"
+      description="Uninstalls the collective.cse add-on."
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      post_handler=".setuphandlers.uninstall"
+      />
+
+  <genericsetup:registerProfile
+      name="plone4"
+      title="collective.cse: Plone 4 only profile"
+      directory="profiles/plone4"
+      description='Profile intended only in Plone 4 (No need to manually run it, default install profile should do it).'
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:registerProfile
+      name="plone5"
+      title="collective.cse: Plone 5 only profile"
+      directory="profiles/plone5"
+      description='Profile intended only in Plone 5 (No need to manually run it, default install profile should do it).'
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+</configure>

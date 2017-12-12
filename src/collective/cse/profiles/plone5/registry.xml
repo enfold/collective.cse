@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<registry>
+
+  <records prefix="plone.resources/cse-style"
+      interface="Products.CMFPlone.interfaces.IResourceRegistry">
+    <value key="css">
+      <element>++plone++collective.cse/less/style.less</element>
+    </value>
+  </records>
+
+  <records prefix="plone.bundles/cse-bundle"
+      interface="Products.CMFPlone.interfaces.IBundleRegistry">
+    <value key="resources">
+      <element>cse-style</element>
+    </value>
+    <value key="depends"></value>
+    <value key="enabled">True</value>
+    <value key="compile">True</value>
+    <value key="jscompilation"></value>
+    <value key="csscompilation">++plone++collective.cse/css/style.css</value>
+    <value key="last_compilation">2017-12-11 00:00:00</value>
+  </records>
+
+</registry>

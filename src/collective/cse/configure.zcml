@@ -1,0 +1,40 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="collective.cse">
+
+  <i18n:registerTranslations directory="locales" />
+
+  <!--
+    Be careful if you use general includeDependencies, it can have sideffects!
+    Better import explicite packages or configurations ;)
+  -->
+  <!--<includeDependencies package="." />-->
+
+  <include package=".browser" />
+
+  <include file="permissions.zcml" />
+  <include file="profiles.zcml" />
+
+  <include file="upgrades.zcml" />
+
+  <plone:static
+      directory="static"
+      type="plone"
+      name="collective.cse"
+      />
+
+  <browser:resourceDirectory
+    name="collective.cse"
+    directory="static" />
+
+  <utility
+      factory=".setuphandlers.HiddenProfiles"
+      name="collective.cse-hiddenprofiles"
+      />
+
+  <!-- -*- extra stuff goes here -*- -->
+
+</configure>

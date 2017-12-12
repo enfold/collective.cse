@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<import-steps>
+    <import-step
+        id="cse_various"
+        version="1"
+        handler="collective.cse.setuphandlers.import_various"
+        title="Custom Search Plugin (Additional steps)">
+    </import-step>
+</import-steps>
