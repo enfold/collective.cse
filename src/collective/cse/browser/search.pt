@@ -9,6 +9,7 @@
 
 <metal:content fill-slot="content">
 <metal:content define-macro="content">
+<div id="content">
 
   <tal:default_widget condition="view/use_default_widget">
     <h1 id="cse-search-title" class="documentFirstHeading">
@@ -29,96 +30,31 @@
 
   <tal:custom_search condition="not:view/use_default_widget">
 
-  <div class="csesearch"
-       tal:define="has_results view/has_results;
-                   api_result view/results;">
-    <div>
-         <form class="form-inline" tal:attributes="action view/search_url"
-               method="POST" name="gs" id="gs">
-              <div class="form-group">
-                <input type="text" class="form-control" maxlength="256" size="32" name="q" tal:attributes="value view/query" />
-                <input class="searchButton" value="Search" type="submit">
-              </div>
+  <div class="csesearch">
+       <form class="form-inline" tal:attributes="action view/search_url"
+             method="POST" name="cse-search-form" id="cse-search-form">
+            <div class="form-group">
+              <input type="text" class="form-control" maxlength="256" size="32" id="q"/>
+              <input class="searchButton" value="Search" type="submit">
+            </div>
 
-              <div class="form-group" tal:condition="view/sort_options">
-                  <span>Sort by:</span>
-                  <select name="sort_by">
-                    <option tal:repeat="option view/sort_options"
-                            tal:content="option/label"
-                            tal:attributes="value option/value;
-                                            selected python:view.sort_by==option['value'] and 'selected';">Relevance</option>
-                  </select>
-              </div>
-         </form>
-         <div class="searchOption-tabs" tal:condition="has_results">
-           <ul class="nav nav-tabs">
-             <li class="active"
-                 tal:repeat="option view/refinement_options"
-                 tal:attributes="class python:view.refinement==option['value'] and 'active';"
-             ><a href="#"
-                tal:content="option/label"
-                tal:attributes="href string:${context/absolute_url}/@@csesearch?q=${view/query}&amp;page=${view/page}&amp;sort_by=${view/sort_by}&amp;refinement=${option/value};">All</a></li>
-           </ul>
-        </div>
-      </div>
-      <div class="results" id="api-url" tal:condition="python:has_results and 'spelling' in api_result">
-          You searched for <b tal:content="view/query">query</b>. Did you mean <a tal:attributes="href string:@@csesearch?q=${api_result/spelling/correctedQuery}" tal:content=" structure api_result/spelling/htmlCorrectedQuery">suggestion</a>?
-      </div>
+            <div class="form-group" tal:condition="view/sort_options">
+                <span>Sort by:</span>
+                <select id="sort_by">
+                  <option tal:repeat="option view/sort_options"
+                          tal:content="option/label"
+                          tal:attributes="value option/value;
+                                          selected python:view.sort_by==option['value'] and 'selected';">Relevance</option>
+                </select>
+            </div>
+       </form>
 
-      <div id="searchbar" tal:condition="has_results" class="row">
-        <div class="col-md-12">
-              <b>Search Results</b>
-                     Results <b tal:content="view/start">1</b> - <b tal:content="view/end">10</b> for "<b tal:content="view/query">water</b>".
-         <hr/>
-       </div>
-      </div>
+       <div id="cse-search-results"></div>
 
-      <div class="results promotions" tal:condition="python:has_results and 'promotions' in api_result">
-         <div class="row" tal:repeat="result api_result/promotions">
-           <div class="col-sm-12 results-details">
-              <a href="#" tal:attributes="href result/link"><span class="l" tal:content="structure result/htmlTitle">Promoted</span></a><br />
-                <span class="search-results-snippet" tal:content="structure python:result['bodyLines'][0]['htmlTitle']"></span> <br /><span class="results-url" tal:content="result/link">http://www.google.com</span><br />
-         </div>
-        </div>
-      </div>
-
-      <div class="results" tal:condition="has_results">
-         <div class="row" tal:repeat="item python: api_result['items']">
-          <div class="col-sm-12 results-details">
-            <a href="#" tal:attributes="href item/link"><b tal:content="structure item/htmlTitle">Result</b></a><br />
-            <span class="search-results-snippet" tal:content="structure item/htmlSnippet"></span> <br /><span class="results-url" tal:content="item/link">https://www.google.com</span>
-             </div>
-         </div>
-      </div>
-
-      <div class="results" tal:condition="python: view.query and not has_results">
-          No results found.
-      </div>
-
-      <!-- pagination -->
-      <div class="listingBar" tal:condition="view/show_pagination">
-        <ul class="pagination">
-          <li class="previous" tal:condition="view/previous">
-              <a tal:attributes="href string:${context/absolute_url}/@@csesearch?q=${view/query}&amp;page=${view/previous}&amp;sort_by=${view/sort_by}&amp;refinement=${view/refinement}"> Previous 10 items </a>
-          </li>
-          <li class="next" tal:condition="view/next">
-              <a tal:attributes="href string:${context/absolute_url}/@@csesearch?q=${view/query}&amp;page=${view/next}&amp;sort_by=${view/sort_by}&amp;refinement=${view/refinement}"> Next 10 items </a>
-          </li>
-          <li tal:repeat="page view/previous_pages"><a tal:attributes="href string:${context/absolute_url}/@@csesearch?q=${view/query}&amp;page=${page}&amp;sort_by=${view/sort_by}&amp;refinement=${view/refinement}" tal:content="page"> 2 </a></li>
-          <li class="active"><a tal:content="view/page" href="#">1</a></li>
-          <li tal:repeat="page view/next_pages"><a tal:attributes="href string:${context/absolute_url}/@@csesearch?q=${view/query}&amp;page=${page}&amp;sort_by=${view/sort_by}&amp;refinement=${view/refinement}" tal:content="page"> 2</a></li>
-          <li tal:condition="view/last_page"><a href="#">...</a>
-              <a tal:attributes="href string:${context/absolute_url}/@@csesearch?q=${view/query}&amp;page=${view/last_page}&amp;sort_by=${view/sort_by}&amp;refinement=${view/refinement}" tal:content="view/last_page"> 2 </a>
-          </li>
-        </ul>
-      </div>
-
-      <div  tal:condition="python:view.query and not api_result">
-          <h3>There was a problem connecting with the search engine. Please try again later.</h3>
-      </div>
     </div>
   </tal:custom_search>
 
+</div>
 </metal:content>
 </metal:content>
 

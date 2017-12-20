@@ -30,6 +30,15 @@
       layer="collective.cse.interfaces.ICollectiveCseLayer"
       />
 
+  <!-- JSON Search results -->
+  <browser:page
+      for="*"
+      name="csesearchresults"
+      class=".search.CSEJsonSearchResults"
+      permission="zope2.View"
+      layer="collective.cse.interfaces.ICollectiveCseLayer"
+      />
+
   <!-- Override Search viewlet -->
   <browser:viewlet
       name="plone.searchbox"

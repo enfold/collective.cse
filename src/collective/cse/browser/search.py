@@ -8,6 +8,7 @@ from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.registry.interfaces import IRegistry
 from Products.Five.browser import BrowserView
 from zope.component import getUtility
+import json
 import logging
 
 logger = logging.getLogger('collective.cse.browser.search')
@@ -30,6 +31,15 @@ class CSEView(BrowserView):
     configured = False
     next = False
     previous = False
+
+    @property
+    def sort_by(self):
+        return self.request.form.get('sort_by', '')
+
+    @property
+    def query(self):
+        query = self.request.form.get('q', '')
+        return query
 
     @property
     def settings(self):
@@ -63,44 +73,8 @@ class CSEView(BrowserView):
 
     # XXX: Below here are methods used for the custom search using googleapi
     def __call__(self, *args, **kw):
-        query = self.query
-        if not self.use_default_widget and query:
-            if self.settings.api_key:
-                self.configured = True
-                service = build('customsearch', 'v1',
-                                developerKey=self.settings.api_key)
-                cse = service.cse()
-                start = self.start
-                if self.refinement and self.refinement in self.list_of_refinements:
-                    query = '{} more:{}'.format(query, self.refinement)
-                args = dict(q=query, cx=self.settings.cse_id,
-                            num=BATCH_SIZE, start=start, gl='us')
-                if self.sort_by and self.sort_by in self.list_sorting:
-                    args['sort'] = self.sort_by
-                req = cse.list(**args)
-                self.results = res = req.execute()
-                self.total = total = min(int(res['searchInformation']['totalResults']), MAX_RESULTS)
-                self.formatted_total = res['searchInformation']['formattedTotalResults']
-                extra_page = total % BATCH_SIZE != 0 and 1 or 0
-                page_count = total / BATCH_SIZE + extra_page
-                self.last_page = page_count
-                if 'nextPage' in res['queries']:
-                    start = res['queries']['nextPage'][0]['startIndex']
-                    if start < MAX_RESULTS:
-                        self.next = page_number(start)
-                if 'previousPage' in res['queries']:
-                    start = res['queries']['previousPage'][0]['startIndex']
-                    self.previous = page_number(start)
-                page = self.page
-                last_page = self.last_page
-                next_range = range(int(page) + 1, int(page) + 5)
-                next_pages = [n for n in next_range if n <= last_page]
-                previous_range = range(int(page) - 1, int(page) - 5, -1)
-                previous_pages = [n for n in previous_range if n > 0]
-                previous_pages.reverse()
-                self.next_pages = next_pages
-                self.previous_pages = previous_pages
-            else:
+        if not self.use_default_widget:
+            if not self.settings.api_key:
                 self.configured = False
         return self.index(*args, **kw)
 
@@ -110,11 +84,6 @@ class CSEView(BrowserView):
             return int(self.request.form.get('page', '1'))
         except ValueError:
             return 1
-
-    @property
-    def query(self):
-        query = self.request.form.get('q', '')
-        return query
 
     @property
     def start(self):
@@ -148,7 +117,7 @@ class CSEView(BrowserView):
             elif '\n' in self.settings.refinements:
                 splitted_refinements = self.settings.refinements.split('\n')
             else:
-                splitted_refinements = self.settings.sort_options.split()
+                splitted_refinements = self.settings.refinements.split()
             for ref_line in splitted_refinements:
                 split_line = ref_line.split('|')
                 if len(split_line) == 2:
@@ -164,10 +133,6 @@ class CSEView(BrowserView):
                 results.append({'value': k, 'label': v})
 
         return results
-
-    @property
-    def sort_by(self):
-        return self.request.form.get('sort_by', '')
 
     @property
     def list_sorting(self):
@@ -200,3 +165,57 @@ class CSEView(BrowserView):
         while not INavigationRoot.providedBy(context):
             context = aq_inner(aq_parent(context))
         return u"%s/@@csesearch" % context.absolute_url()
+
+
+class CSEJsonSearchResults(CSEView):
+
+    def __call__(self, *args, **kw):
+        results = {'total': 0}
+        results['query'] = query = self.query
+        if query:
+            if self.settings.api_key:
+                self.configured = True
+                service = build('customsearch', 'v1',
+                                developerKey=self.settings.api_key)
+                cse = service.cse()
+                start = self.start
+                results['all_refinements'] = self.refinement_options
+                if self.refinement and self.refinement in self.list_of_refinements:
+                    query = '{} more:{}'.format(query, self.refinement)
+                    results['refinement'] = self.refinement
+                args = dict(q=query, cx=self.settings.cse_id,
+                            num=BATCH_SIZE, start=start, gl='us')
+                if self.sort_by and self.sort_by in self.list_sorting:
+                    args['sort'] = self.sort_by
+                req = cse.list(**args)
+                results['results'] = self.results = res = req.execute()
+                results['total'] = self.total = total = min(int(res['searchInformation']['totalResults']), MAX_RESULTS)
+                results['formatted_total'] = res['searchInformation']['formattedTotalResults']
+                extra_page = total % BATCH_SIZE != 0 and 1 or 0
+                page_count = total / BATCH_SIZE + extra_page
+                results['last_page'] = last_page = page_count
+                if 'nextPage' in res['queries']:
+                    start = res['queries']['nextPage'][0]['startIndex']
+                    if start < MAX_RESULTS:
+                        results['next'] = page_number(start)
+                if 'previousPage' in res['queries']:
+                    start = res['queries']['previousPage'][0]['startIndex']
+                    results['previous'] = page_number(start)
+
+                results['show_pagination'] = 'next' in results or 'previous' in results
+
+                results['page'] = page = self.page
+                next_range = range(int(page) + 1, int(page) + 5)
+                next_pages = [n for n in next_range if n <= last_page]
+                previous_range = range(int(page) - 1, int(page) - 5, -1)
+                previous_pages = [n for n in previous_range if n > 0]
+                previous_pages.reverse()
+                results['next_pages'] = next_pages
+                results['previous_pages'] = previous_pages
+                results['start'] = self.start
+                results['end'] = self.end
+            else:
+                self.configured = False
+        self.request.response.setHeader('Content-Type', 'application/json')
+        return json.dumps(results)
+
