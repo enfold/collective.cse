@@ -35,7 +35,7 @@
              method="POST" name="cse-search-form" id="cse-search-form">
             <div class="form-group">
               <input type="text" class="form-control" maxlength="256" size="32" id="q"/>
-              <input class="searchButton" value="Search" type="submit">
+              <input class="searchButton allowMultiSubmit" value="Search" type="submit">
             </div>
 
             <div class="form-group" tal:condition="view/sort_options">

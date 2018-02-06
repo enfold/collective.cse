@@ -1,4 +1,13 @@
 // This is not implemented as a pattern because this can be used on a Plone 4 or Plone 5
+var extra_args = {};
+
+function CSESetExtraArgs(args){
+    extra_args = args;
+}
+
+function CSEGetExtraArgs(){
+    return extra_args;
+}
 
 function getParameterByName(name) {
     // Helper to get value from parameter
@@ -266,23 +275,27 @@ function populateSearchResults(data){
     search_results.append(createSearchRefinementsTabs(data));
     search_results.append(createSuggestions(data));
     search_results.append(createSearchBar(data));
-    search_results.append(createPromotionsSection(data));
+    if (data.show_promotions){
+        search_results.append(createPromotionsSection(data));
+    }
     search_results.append(createResultsSection(data));
     search_results.append(createPagination(data));
   }
 
 }
 
-function performSearch( page, refinement ){
+function CSEPerformSearch( page, refinement ){
   var query = $('div.csesearch input#q').val();
   var sort_by_field = $('div.csesearch select#sort_by');
   sort_by_field.off('change').on('change', function(event){
-    performSearch( page, refinement );
+    CSEPerformSearch( page, refinement );
   })
 
   var sort_by = sort_by_field.val();
   if (!page) page = 1;
   if (!refinement) refinement = "";
+
+  var extra_args = CSEGetExtraArgs();
 
   $.ajax({
     url: "@@csesearchresults",
@@ -290,7 +303,8 @@ function performSearch( page, refinement ){
       'q': query,
       'sort_by': sort_by,
       'page': page,
-      'refinement': refinement
+      'refinement': refinement,
+      'extra_args': JSON.stringify(extra_args)
     }
   }).done(function( data ) {
     populateSearchResults(data);
@@ -303,11 +317,12 @@ $(function() {
     var query = getParameterByName('q');
     $('div.csesearch input#q').val(query);
     $('div.csesearch form#cse-search-form').on('submit', function(event){
-      performSearch();
+      // XXX: Remove this, if you want to persist the extra_args when changing the query
+      CSESetExtraArgs({});
+      CSEPerformSearch();
       event.preventDefault();
     })
-
-    performSearch();
+    CSEPerformSearch();
 });
 
 define("/vagrant/src/collective.cse/src/collective/cse/static/js/cse.js", function(){});

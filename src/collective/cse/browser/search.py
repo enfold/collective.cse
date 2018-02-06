@@ -2,14 +2,18 @@
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from collective.cse.interfaces import ICollectiveCSESettings
+from collective.cse.interfaces import ICSECustomData
 from collections import OrderedDict
 from googleapiclient.discovery import build
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.registry.interfaces import IRegistry
 from Products.Five.browser import BrowserView
+from zope.component import getAdapters
 from zope.component import getUtility
+from time import sleep
 import json
 import logging
+import os
 
 logger = logging.getLogger('collective.cse.browser.search')
 
@@ -42,6 +46,16 @@ class CSEView(BrowserView):
         return query
 
     @property
+    def extra_args(self):
+        extra_args = self.request.form.get('extra_args', '')
+        try:
+            extra_args = json.loads(extra_args)
+        except:
+            # Object sent is not a json, so just pass
+            pass
+        return extra_args
+
+    @property
     def settings(self):
         registry = getUtility(IRegistry)
         settings = registry.forInterface(ICollectiveCSESettings, check=False)
@@ -64,8 +78,12 @@ class CSEView(BrowserView):
         })();
         """
 
-        if self.settings.cse_id:
-            results = template % self.settings.cse_id
+        cse_id = self.settings.cse_id
+        if not cse_id:
+            cse_id = os.getenv("CSE_CSE_ID")
+
+        if cse_id:
+            results = template % cse_id
         else:
             results = template % ""
 
@@ -168,53 +186,100 @@ class CSEView(BrowserView):
 
 
 class CSEJsonSearchResults(CSEView):
+    search_tries = 0
+    limit_retries = 5
+    wait_seconds_retry = 2
+    valid_search = False
+
+    def search_and_retry(self, req):
+        res = None
+        if not self.valid_search:
+            self.search_tries += 1
+            try:
+                res = req.execute()
+                self.valid_search = True
+            except Exception as e:
+                logger.error("An error occurred while trying to get search results. Attempt %s of %s" % (self.search_tries, self.limit_retries))
+                logger.error(e)
+                if self.search_tries < self.limit_retries:
+                    logger.error("Waiting %s seconds and retrying." % self.wait_seconds_retry)
+                    sleep(self.wait_seconds_retry)
+                    res = self.search_and_retry(req)
+                else:
+                    logger.error("Too many attempts tried. Giving up")
+
+        return res
 
     def __call__(self, *args, **kw):
         results = {'total': 0}
         results['query'] = query = self.query
+        results['show_promotions'] = self.settings.show_promotions
+        api_key = None
+        cse_id = None
         if query:
-            if self.settings.api_key:
+            api_key = self.settings.api_key
+            if not api_key:
+                api_key = os.getenv("CSE_API_KEY")
+            if api_key:
                 self.configured = True
+                cse_id = self.settings.cse_id
+                if not cse_id:
+                    cse_id = os.getenv("CSE_CSE_ID")
+
                 service = build('customsearch', 'v1',
-                                developerKey=self.settings.api_key)
+                                developerKey=api_key)
                 cse = service.cse()
                 start = self.start
                 results['all_refinements'] = self.refinement_options
                 if self.refinement and self.refinement in self.list_of_refinements:
                     query = '{} more:{}'.format(query, self.refinement)
                     results['refinement'] = self.refinement
-                args = dict(q=query, cx=self.settings.cse_id,
+                args = dict(q=query, cx=cse_id,
                             num=BATCH_SIZE, start=start, gl='us')
                 if self.sort_by and self.sort_by in self.list_sorting:
                     args['sort'] = self.sort_by
-                req = cse.list(**args)
-                results['results'] = self.results = res = req.execute()
-                results['total'] = self.total = total = min(int(res['searchInformation']['totalResults']), MAX_RESULTS)
-                results['formatted_total'] = res['searchInformation']['formattedTotalResults']
-                extra_page = total % BATCH_SIZE != 0 and 1 or 0
-                page_count = total / BATCH_SIZE + extra_page
-                results['last_page'] = last_page = page_count
-                if 'nextPage' in res['queries']:
-                    start = res['queries']['nextPage'][0]['startIndex']
-                    if start < MAX_RESULTS:
-                        results['next'] = page_number(start)
-                if 'previousPage' in res['queries']:
-                    start = res['queries']['previousPage'][0]['startIndex']
-                    results['previous'] = page_number(start)
 
-                results['show_pagination'] = 'next' in results or 'previous' in results
+                custom_data_sources = getAdapters((self.context, self.request), ICSECustomData)
+                for name,adapter in custom_data_sources:
+                    args = adapter(args, self.extra_args)
 
-                results['page'] = page = self.page
-                next_range = range(int(page) + 1, int(page) + 5)
-                next_pages = [n for n in next_range if n <= last_page]
-                previous_range = range(int(page) - 1, int(page) - 5, -1)
-                previous_pages = [n for n in previous_range if n > 0]
-                previous_pages.reverse()
-                results['next_pages'] = next_pages
-                results['previous_pages'] = previous_pages
-                results['start'] = self.start
-                results['end'] = self.end
-            else:
+                if args.get('cx'):
+                    req = cse.list(**args)
+                    results['results'] = self.results = res = self.search_and_retry(req)
+                    if res:
+                        # XXX: Google includes <br> and \n with its htmlSnippets, remove those here
+                        if 'items' in self.results:
+                            for item in self.results['items']:
+                                if 'htmlSnippet' in item:
+                                    item['htmlSnippet'] = item['htmlSnippet'].replace('<br>', '')
+                                    item['htmlSnippet'] = item['htmlSnippet'].replace('\n', '')
+
+                        results['total'] = self.total = total = min(int(res['searchInformation']['totalResults']), MAX_RESULTS)
+                        results['formatted_total'] = res['searchInformation']['formattedTotalResults']
+                        extra_page = total % BATCH_SIZE != 0 and 1 or 0
+                        page_count = total / BATCH_SIZE + extra_page
+                        results['last_page'] = last_page = page_count
+                        if 'nextPage' in res['queries']:
+                            start = res['queries']['nextPage'][0]['startIndex']
+                            if start < MAX_RESULTS:
+                                results['next'] = page_number(start)
+                        if 'previousPage' in res['queries']:
+                            start = res['queries']['previousPage'][0]['startIndex']
+                            results['previous'] = page_number(start)
+
+                        results['show_pagination'] = 'next' in results or 'previous' in results
+
+                        results['page'] = page = self.page
+                        next_range = range(int(page) + 1, int(page) + 5)
+                        next_pages = [n for n in next_range if n <= last_page]
+                        previous_range = range(int(page) - 1, int(page) - 5, -1)
+                        previous_pages = [n for n in previous_range if n > 0]
+                        previous_pages.reverse()
+                        results['next_pages'] = next_pages
+                        results['previous_pages'] = previous_pages
+                        results['start'] = self.start
+                        results['end'] = self.end
+            if not api_key or not args.get('cx'):
                 self.configured = False
         self.request.response.setHeader('Content-Type', 'application/json')
         return json.dumps(results)

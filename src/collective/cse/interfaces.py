@@ -45,3 +45,15 @@ class ICollectiveCSESettings(Interface):
         required=False,
         default=u"",
     )
+
+    show_promotions = schema.Bool(
+        title=_(u"Show Promotions"),
+        description=_(
+            u"Mark this checkbox to allow rendering promotions with the results."),
+        default=False,
+        required=False)
+
+
+class ICSECustomData(Interface):
+    """
+    """
