@@ -14,7 +14,7 @@ class ICollectiveCSESettings(Interface):
     cse_id = schema.TextLine(
         title=_(u'Search engine ID'),
         description=_(u'Enter here the search ID, as found in https://cse.google.com/cse/all'),
-        required=True,
+        required=False,
     )
 
     use_default_widget = schema.Bool(
