@@ -40,7 +40,7 @@ function createSearchRefinementsTabs(data){
         .attr('href', '#')
         .html(value.label)
         .on('click', function (event){
-          performSearch( data.page, value.value );
+          CSEPerformSearch( data.page, value.value );
           event.preventDefault();
         })
       );
@@ -61,7 +61,7 @@ function createSuggestions(data){
                   .html(data.results.spelling.htmlCorrectedQuery)
                   .on('click', function (event){
                     $('div.csesearch input#q').val(data.results.spelling.correctedQuery);
-                    performSearch( data.page );
+                    CSEPerformSearch( data.page );
                     event.preventDefault();
                   }))
   }
@@ -172,7 +172,7 @@ function createPagination(data){
                              .attr('href', '#')
                              .html(" Previous 10 items ")
                              .on('click', function (event){
-                               performSearch( data.previous, data.refinement );
+                               CSEPerformSearch( data.previous, data.refinement );
                                event.preventDefault();
                              })
                      );
@@ -186,7 +186,7 @@ function createPagination(data){
                          .attr('href', '#')
                          .html(" Next 10 items ")
                          .on('click', function (event){
-                           performSearch( data.next, data.refinement );
+                           CSEPerformSearch( data.next, data.refinement );
                            event.preventDefault();
                          })
                  );
@@ -199,7 +199,7 @@ function createPagination(data){
                          .attr('href', '#')
                          .html(value)
                          .on('click', function (event){
-                           performSearch( value, data.refinement );
+                           CSEPerformSearch( value, data.refinement );
                            event.preventDefault();
                          })
                  );
@@ -227,7 +227,7 @@ function createPagination(data){
                          .attr('href', '#')
                          .html(value)
                          .on('click', function (event){
-                           performSearch( value, data.refinement );
+                           CSEPerformSearch( value, data.refinement );
                            event.preventDefault();
                          })
                  );
@@ -246,7 +246,7 @@ function createPagination(data){
                               .attr('href', '#')
                               .html(data.last_page)
                               .on('click', function (event){
-                                performSearch( data.last_page, data.refinement );
+                                CSEPerformSearch( data.last_page, data.refinement );
                                 event.preventDefault();
                               })
                       );
@@ -313,7 +313,11 @@ function CSEPerformSearch( page, refinement ){
 }
 
 $(function() {
-    console.log( "ready!" );
+    console.log( "collective.cse ready!" );
+    if ($('div.csesearch input#q').length == 0){
+      // Means we are not at the @@csesearch page, so avoid calling the search
+      return;
+    }
     var query = getParameterByName('q');
     $('div.csesearch input#q').val(query);
     $('div.csesearch form#cse-search-form').on('submit', function(event){
