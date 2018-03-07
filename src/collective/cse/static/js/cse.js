@@ -313,7 +313,11 @@ function CSEPerformSearch( page, refinement ){
 }
 
 $(function() {
-    console.log( "ready!" );
+    console.log( "collective.cse ready!" );
+    if ($('div.csesearch input#q').length == 0){
+      // Means we are not at the @@csesearch page, so avoid calling the search
+      return;
+    }
     var query = getParameterByName('q');
     $('div.csesearch input#q').val(query);
     $('div.csesearch form#cse-search-form').on('submit', function(event){

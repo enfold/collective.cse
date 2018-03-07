@@ -5,6 +5,9 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
+- Fix an issue were @@csesearchresults would be called on any path
+  [frapell]
+
 - Make the promotions to be optional to be rendered with results
   [frapell]
 

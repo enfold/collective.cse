@@ -192,6 +192,10 @@ class CSEJsonSearchResults(CSEView):
     valid_search = False
 
     def search_and_retry(self, req):
+        # XXX: An alternative to this implementation would be to call execute with num_
+        # retries argument set to some number, however here we can control the time
+        # between retries and retry on any error, not only 500's from Google
+        # https://google.github.io/google-api-python-client/docs/epy/googleapiclient.http.HttpRequest-class.html#execute
         res = None
         if not self.valid_search:
             self.search_tries += 1
