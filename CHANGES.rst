@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.0.1 (unreleased)
+1.1.0 (2018-03-13)
 ------------------
 
 - Fix an issue were @@csesearchresults would be called on any path
