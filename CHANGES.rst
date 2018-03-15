@@ -5,7 +5,8 @@ Changelog
 1.1.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Decode query as utf-8
+  [frapell]
 
 
 1.1.0 (2018-03-13)

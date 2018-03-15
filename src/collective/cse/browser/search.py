@@ -38,16 +38,16 @@ class CSEView(BrowserView):
 
     @property
     def sort_by(self):
-        return self.request.form.get('sort_by', '')
+        return self.request.form.get('sort_by', '').decode('utf-8')
 
     @property
     def query(self):
-        query = self.request.form.get('q', '')
+        query = self.request.form.get('q', '').decode('utf-8')
         return query
 
     @property
     def extra_args(self):
-        extra_args = self.request.form.get('extra_args', '')
+        extra_args = self.request.form.get('extra_args', '').decode('utf-8')
         try:
             extra_args = json.loads(extra_args)
         except:
