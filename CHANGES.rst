@@ -5,6 +5,9 @@ Changelog
 1.1.2 (unreleased)
 ------------------
 
+- Make sure @@csesearchresults is called at site root
+  [frapell]
+
 - Add ability to customize the search results
   [frapell]
 
