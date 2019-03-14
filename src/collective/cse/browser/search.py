@@ -3,6 +3,7 @@ from Acquisition import aq_inner
 from Acquisition import aq_parent
 from collective.cse.interfaces import ICollectiveCSESettings
 from collective.cse.interfaces import ICSECustomData
+from collective.cse.interfaces import ICSECustomizeResults
 from collections import OrderedDict
 from googleapiclient.discovery import build
 from plone.app.layout.navigation.interfaces import INavigationRoot
@@ -283,6 +284,11 @@ class CSEJsonSearchResults(CSEView):
                         results['previous_pages'] = previous_pages
                         results['start'] = self.start
                         results['end'] = self.end
+
+                        custom_results_modifiers = getAdapters((self.context, self.request), ICSECustomizeResults)
+                        for name, adapter in custom_results_modifiers:
+                            adapter(results)
+
             if not api_key or not args.get('cx'):
                 self.configured = False
         self.request.response.setHeader('Content-Type', 'application/json')

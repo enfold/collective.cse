@@ -5,7 +5,8 @@ Changelog
 1.1.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add ability to customize the search results
+  [frapell]
 
 
 1.1.1 (2018-03-15)

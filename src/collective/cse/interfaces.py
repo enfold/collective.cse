@@ -57,3 +57,8 @@ class ICollectiveCSESettings(Interface):
 class ICSECustomData(Interface):
     """
     """
+
+
+class ICSECustomizeResults(Interface):
+    """
+    """
