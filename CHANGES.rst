@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.1.2 (unreleased)
+1.2.0 (2019-03-15)
 ------------------
 
 - Make sure @@csesearchresults is called at site root
