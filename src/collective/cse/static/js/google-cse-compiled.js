@@ -297,8 +297,13 @@ function CSEPerformSearch( page, refinement ){
 
   var extra_args = CSEGetExtraArgs();
 
+  var url = "@@csesearchresults";
+  if (portal_url !== undefined){
+    url = portal_url + "/@@csesearchresults"
+  }
+
   $.ajax({
-    url: "@@csesearchresults",
+    url: url,
     data: {
       'q': query,
       'sort_by': sort_by,
@@ -329,5 +334,5 @@ $(function() {
     CSEPerformSearch();
 });
 
-define("/vagrant/src/collective.cse/src/collective/cse/static/js/cse.js", function(){});
+define("/trabajo/collective/collective.cse/src/collective/cse/static/js/cse.js", function(){});
 
