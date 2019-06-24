@@ -19,7 +19,7 @@
     <value key="compile">True</value>
     <value key="jscompilation">++plone++collective.cse/js/cse-compiled.js</value>
     <value key="csscompilation">++plone++collective.cse/css/style.css</value>
-    <value key="last_compilation">2017-12-20 00:00:00</value>
+    <value key="last_compilation">2019-06-24 00:00:00</value>
   </records>
 
 </registry>

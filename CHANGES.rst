@@ -5,7 +5,9 @@ Changelog
 1.2.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Call @@csesearchresults for the higher NavigationRoot, which sometimes 
+  is not the actual site root.
+  [frapell]
 
 
 1.2.0 (2019-03-15)

@@ -297,9 +297,13 @@ function CSEPerformSearch( page, refinement ){
 
   var extra_args = CSEGetExtraArgs();
 
-  var url = "@@csesearchresults";
-  if (portal_url !== undefined){
-    url = portal_url + "/@@csesearchresults"
+  var url = $('div.csesearch form#cse-search-form').data('searchresults-url');
+  if (url === undefined){
+    var url = "@@csesearchresults";
+
+    if (portal_url !== undefined){
+      url = portal_url + "/@@csesearchresults"
+    }
   }
 
   $.ajax({
@@ -334,5 +338,5 @@ $(function() {
     CSEPerformSearch();
 });
 
-define("/trabajo/collective/collective.cse/src/collective/cse/static/js/cse.js", function(){});
+define("/vagrant/src/collective.cse/src/collective/cse/static/js/cse.js", function(){});
 
