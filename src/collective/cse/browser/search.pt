@@ -16,7 +16,7 @@
       Search results
     </h1>
 
-    <form class="form-inline" tal:attributes="action string:${context/portal_url}/@@csesearch"
+    <form class="form-inline" tal:attributes="action view/search_url"
           name="cse-search-form" id="cse-search-form">
       <div class="form-group">
         <input type="text" class="form-control" maxlength="256" size="32" name="q" tal:attributes="value view/query" />
@@ -31,8 +31,12 @@
   <tal:custom_search condition="not:view/use_default_widget">
 
   <div class="csesearch">
-       <form class="form-inline" tal:attributes="action view/search_url"
-             method="POST" name="cse-search-form" id="cse-search-form">
+       <form class="form-inline"
+             method="POST"
+             name="cse-search-form"
+             id="cse-search-form"
+             tal:attributes="action view/search_url;
+                             data-searchresults-url view/search_results_url">
             <div class="form-group">
               <input type="text" class="form-control" maxlength="256" size="32" id="q"/>
               <input class="searchButton allowMultiSubmit" value="Search" type="submit">

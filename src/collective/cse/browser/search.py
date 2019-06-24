@@ -185,6 +185,13 @@ class CSEView(BrowserView):
             context = aq_inner(aq_parent(context))
         return u"%s/@@csesearch" % context.absolute_url()
 
+    @property
+    def search_results_url(self):
+        context = aq_inner(self.context)
+        while not INavigationRoot.providedBy(context):
+            context = aq_inner(aq_parent(context))
+        return u"%s/@@csesearchresults" % context.absolute_url()
+
 
 class CSEJsonSearchResults(CSEView):
     search_tries = 0
