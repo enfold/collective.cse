@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.2.1 (unreleased)
+1.2.1 (2019-06-24)
 ------------------
 
 - Call @@csesearchresults for the higher NavigationRoot, which sometimes 
