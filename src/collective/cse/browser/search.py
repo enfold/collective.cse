@@ -15,6 +15,7 @@ from time import sleep
 import json
 import logging
 import os
+import six
 
 logger = logging.getLogger('collective.cse.browser.search')
 
@@ -39,16 +40,17 @@ class CSEView(BrowserView):
 
     @property
     def sort_by(self):
-        return self.request.form.get('sort_by', '').decode('utf-8')
+        sort_by = self.request.form.get('sort_by', '')
+        return six.u(sort_by)
 
     @property
     def query(self):
-        query = self.request.form.get('q', '').decode('utf-8')
-        return query
+        query = self.request.form.get('q', '')
+        return six.u(query)
 
     @property
     def extra_args(self):
-        extra_args = self.request.form.get('extra_args', '').decode('utf-8')
+        extra_args = six.u(self.request.form.get('extra_args', ''))
         try:
             extra_args = json.loads(extra_args)
         except:

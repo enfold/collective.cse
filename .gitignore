@@ -4,7 +4,14 @@
 *.mo
 *.py?
 *.swp
+Gruntfile.js
+package.json
+pyvenv.cfg
 # dirs
+.idea/
+.vagrant/
+node_modules/
+share/
 bin/
 buildout-cache/
 develop-eggs/

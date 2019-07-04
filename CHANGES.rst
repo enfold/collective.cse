@@ -5,7 +5,8 @@ Changelog
 1.2.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Python 3 ready
+  [frapell]
 
 
 1.2.1 (2019-06-24)

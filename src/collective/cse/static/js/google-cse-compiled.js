@@ -338,5 +338,5 @@ $(function() {
     CSEPerformSearch();
 });
 
-define("/vagrant/src/collective.cse/src/collective/cse/static/js/cse.js", function(){});
+define("/vagrant/src/collective/cse/static/js/cse.js", function(){});
 
