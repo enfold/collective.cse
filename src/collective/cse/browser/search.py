@@ -41,16 +41,23 @@ class CSEView(BrowserView):
     @property
     def sort_by(self):
         sort_by = self.request.form.get('sort_by', '')
-        return six.u(sort_by)
+        if six.PY2:
+            sort_by = sort_by.decode('utf-8')
+        return sort_by
 
     @property
     def query(self):
         query = self.request.form.get('q', '')
-        return six.u(query)
+        if six.PY2:
+            query = query.decode('utf-8')
+        return query
 
     @property
     def extra_args(self):
-        extra_args = six.u(self.request.form.get('extra_args', ''))
+        extra_args = self.request.form.get('extra_args', '')
+        if six.PY2:
+            extra_args = extra_args.decode('utf-8')
+
         try:
             extra_args = json.loads(extra_args)
         except:
