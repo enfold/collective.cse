@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.2.2 (unreleased)
+2.0.0 (2019-12-10)
 ------------------
 
 - Python 3 ready
