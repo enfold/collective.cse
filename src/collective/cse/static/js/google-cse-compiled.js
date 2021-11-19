@@ -55,7 +55,7 @@ function createSuggestions(data){
   if (data.results.spelling !== undefined){
     div = $("<div></div>")
           .attr('id', "api-url")
-          .append($("<span></span>").html("You searched for " + data.query + ". Did you mean "))
+          .append($("<span></span>").text("You searched for " + data.query + ". Did you mean "))
           .append($("<a></a>")
                   .attr('href', '#')
                   .html(data.results.spelling.htmlCorrectedQuery)
@@ -75,13 +75,13 @@ function createSearchBar(data){
   var inner_div = $("<div></div>")
                   .addClass('col-md-12');
   div.append(inner_div);
-  inner_div.append($("<b></b>").html("Search Results"));
-  inner_div.append($("<span></span>").html(" Results ")
-                   .append($("<b></b>").html(data.start))
-                   .append($("<span></span>").html(" - "))
-                   .append($("<b></b>").html(data.end))
-                   .append($("<span></span>").html(" for "))
-                   .append($("<b></b>").html(data.query)));
+  inner_div.append($("<b></b>").text("Search Results"));
+  inner_div.append($("<span></span>").text(" Results ")
+                   .append($("<b></b>").text(data.start))
+                   .append($("<span></span>").text(" - "))
+                   .append($("<b></b>").text(data.end))
+                   .append($("<span></span>").text(" for "))
+                   .append($("<b></b>").text(data.query)));
   inner_div.append($("<hr/>"));
   return div
 }
@@ -135,18 +135,18 @@ function createResultsSection(data){
                .append($("<a></a>")
                        .attr('href', value.link)
                        .append($("<b></b>")
-                               .html(value.htmlTitle)
+                               .text(value.htmlTitle)
                        )
                )
                .append($("<br/>"))
                .append($("<span></span>")
                        .addClass("search-results-snippet")
-                       .html(value.htmlSnippet)
+                       .text(value.htmlSnippet)
                )
                .append($("<br/>"))
                .append($("<span></span>")
                        .addClass("results-url")
-                       .html(value.link)
+                       .text(value.link)
                );
     row_item.append(link);
     div.append(row_item);
@@ -170,7 +170,7 @@ function createPagination(data){
                      .addClass("previous")
                      .append($("<a></a>")
                              .attr('href', '#')
-                             .html(" Previous 10 items ")
+                             .text(" Previous 10 items ")
                              .on('click', function (event){
                                CSEPerformSearch( data.previous, data.refinement );
                                event.preventDefault();
@@ -184,7 +184,7 @@ function createPagination(data){
                  .addClass("next")
                  .append($("<a></a>")
                          .attr('href', '#')
-                         .html(" Next 10 items ")
+                         .text(" Next 10 items ")
                          .on('click', function (event){
                            CSEPerformSearch( data.next, data.refinement );
                            event.preventDefault();
@@ -197,7 +197,7 @@ function createPagination(data){
       var page = $("<li></li>")
                  .append($("<a></a>")
                          .attr('href', '#')
-                         .html(value)
+                         .text(value)
                          .on('click', function (event){
                            CSEPerformSearch( value, data.refinement );
                            event.preventDefault();
@@ -210,7 +210,7 @@ function createPagination(data){
            .addClass("active")
            .append($("<a></a>")
                    .attr('href', '#')
-                   .html(data.page)
+                   .text(data.page)
                    .on('click', function (event){
                      event.preventDefault();
                    })
@@ -225,7 +225,7 @@ function createPagination(data){
       var page = $("<li></li>")
                  .append($("<a></a>")
                          .attr('href', '#')
-                         .html(value)
+                         .text(value)
                          .on('click', function (event){
                            CSEPerformSearch( value, data.refinement );
                            event.preventDefault();
@@ -238,13 +238,13 @@ function createPagination(data){
       var last_page = $("<li></li>")
                       .append($("<a></a>")
                               .attr('href', '#')
-                              .html("...")
+                              .text("...")
                               .on('click', function (event){
                                 event.preventDefault();
                               })
                       ).append($("<a></a>")
                               .attr('href', '#')
-                              .html(data.last_page)
+                              .text(data.last_page)
                               .on('click', function (event){
                                 CSEPerformSearch( data.last_page, data.refinement );
                                 event.preventDefault();
@@ -264,12 +264,12 @@ function populateSearchResults(data){
   if (data.query == ""){
     search_results.append($("<div></div>")
                           .addClass("results")
-                          .html("Please enter something to search for."));
+                          .text("Please enter something to search for."));
   }
   else if (data.total == 0){
     search_results.append($("<div></div>")
                           .addClass("results")
-                          .html("No results found."));
+                          .text("No results found."));
   }
   else {
     search_results.append(createSearchRefinementsTabs(data));
@@ -338,5 +338,5 @@ $(function() {
     CSEPerformSearch();
 });
 
-define("/vagrant/src/collective/cse/static/js/cse.js", function(){});
+define("/trabajo/runyan/collective.cse/src/collective/cse/static/js/cse.js", function(){});
 

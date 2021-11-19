@@ -5,7 +5,8 @@ Changelog
 2.0.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Replace .html usage in JS with .text to avoid HTML injection
+  [frapell]
 
 
 2.0.0 (2019-12-10)
