@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-2.0.1 (unreleased)
+2.0.1 (2021-11-19)
 ------------------
 
 - Replace .html usage in JS with .text to avoid HTML injection
