@@ -40,8 +40,7 @@ def import_various(context):
 
     if plone_version.startswith('4'):
         profile = 'profile-collective.cse:plone4'
-
-    if plone_version.startswith('5'):
+    else:
         profile = 'profile-collective.cse:plone5'
 
     ps.runAllImportStepsFromProfile(profile)
