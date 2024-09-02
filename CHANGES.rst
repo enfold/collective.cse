@@ -5,7 +5,8 @@ Changelog
 2.0.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Drop support for Plone 4 and Plone 5. Only support Plone 6
+  [frapell]
 
 
 2.0.1 (2021-11-19)
@@ -25,7 +26,7 @@ Changelog
 1.2.1 (2019-06-24)
 ------------------
 
-- Call @@csesearchresults for the higher NavigationRoot, which sometimes 
+- Call @@csesearchresults for the higher NavigationRoot, which sometimes
   is not the actual site root.
   [frapell]
 

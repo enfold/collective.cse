@@ -30,7 +30,7 @@
 
   <tal:custom_search condition="not:view/use_default_widget">
 
-  <div class="csesearch">
+  <div class="pat-csesearch csesearch">
        <form class="form-inline"
              method="POST"
              name="cse-search-form"

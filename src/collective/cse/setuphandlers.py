@@ -15,8 +15,6 @@ class HiddenProfiles(object):
         """Hide unwanted profiles from site-creation and quickinstaller."""
         return [
             'collective.cse:uninstall',
-            'collective.cse:plone4',
-            'collective.cse:plone5',
         ]
 
 
@@ -37,10 +35,3 @@ def import_various(context):
         return
     portal = context.getSite()
     ps = portal.portal_setup
-
-    if plone_version.startswith('4'):
-        profile = 'profile-collective.cse:plone4'
-    else:
-        profile = 'profile-collective.cse:plone5'
-
-    ps.runAllImportStepsFromProfile(profile)

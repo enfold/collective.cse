@@ -14,17 +14,18 @@ long_description = '\n\n'.join([
 
 setup(
     name='collective.cse',
-    version='2.0.2.dev0',
+    version='3.0.0.dev0',
     description="Google Custom Search integration.",
     long_description=long_description,
     # Get more from https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
         "Environment :: Web Environment",
         "Framework :: Plone",
-        "Framework :: Plone :: 4.2",
-        "Framework :: Plone :: 4.3",
+        "Framework :: Plone :: 6.0",
+        "Framework :: Plone :: 6.1",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Operating System :: OS Independent",
         "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
     ],
