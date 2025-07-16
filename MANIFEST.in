@@ -4,3 +4,11 @@ include *.rst
 include *.GPL
 include *.txt
 global-exclude *.pyc
+exclude Vagrantfile
+exclude package.json
+exclude package-lock.json
+exclude provision.sh
+exclude webpack.config.js
+
+recursive-exclude resources *.js
+recursive-exclude resources *.scss
