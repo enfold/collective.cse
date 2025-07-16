@@ -5,7 +5,6 @@
 *.py?
 *.swp
 Gruntfile.js
-package.json
 pyvenv.cfg
 # dirs
 .idea/
