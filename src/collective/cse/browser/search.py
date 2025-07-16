@@ -6,6 +6,7 @@ from collective.cse.interfaces import ICSECustomData
 from collective.cse.interfaces import ICSECustomizeResults
 from collections import OrderedDict
 from googleapiclient.discovery import build
+from html.parser import HTMLParser
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.registry.interfaces import IRegistry
 from Products.Five.browser import BrowserView
@@ -29,6 +30,27 @@ def page_number(start):
 
 def start_count(page):
     return (page - 1) * BATCH_SIZE + 1
+
+
+class BoldOnlyHTMLSanitizer(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.result = []
+        self.allowed_tags = {'b'}
+
+    def handle_starttag(self, tag, attrs):
+        if tag in self.allowed_tags:
+            self.result.append(f"<{tag}>")
+
+    def handle_endtag(self, tag):
+        if tag in self.allowed_tags:
+            self.result.append(f"</{tag}>")
+
+    def handle_data(self, data):
+        self.result.append(data)
+
+    def get_sanitized_html(self):
+        return ''.join(self.result)
 
 
 class CSEView(BrowserView):
@@ -274,6 +296,19 @@ class CSEJsonSearchResults(CSEView):
                                 if 'htmlSnippet' in item:
                                     item['htmlSnippet'] = item['htmlSnippet'].replace('<br>', '')
                                     item['htmlSnippet'] = item['htmlSnippet'].replace('\n', '')
+                                    # XXX: Just in case, sanitize the html
+                                    # This is a custom parser that only allows <b> tags
+                                    # and removes all other tags
+                                    parser = BoldOnlyHTMLSanitizer()
+                                    parser.feed(item['htmlSnippet'])
+                                    item['htmlSnippet'] = parser.get_sanitized_html()
+                                if 'htmlTitle' in item:
+                                    # XXX: Just in case, sanitize the html
+                                    # This is a custom parser that only allows <b> tags
+                                    # and removes all other tags
+                                    parser = BoldOnlyHTMLSanitizer()
+                                    parser.feed(item['htmlTitle'])
+                                    item['htmlTitle'] = parser.get_sanitized_html()
 
                         results['total'] = self.total = total = min(int(res['searchInformation']['totalResults']), MAX_RESULTS)
                         results['formatted_total'] = res['searchInformation']['formattedTotalResults']

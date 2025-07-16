@@ -5,6 +5,10 @@ Changelog
 2.0.2 (unreleased)
 ------------------
 
+- Sanitize the htmlTitle and htmlSnippet to only allow <b> tags and restore
+  the usage of .html()
+  [frapell]
+
 - Drop support for Plone 4 and Plone 5. Only support Plone 6
   [frapell]
 
