@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-2.0.2 (unreleased)
+2.1.0 (2025-07-16)
 ------------------
 
 - Sanitize the htmlTitle and htmlSnippet to only allow <b> tags and restore
